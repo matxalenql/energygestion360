@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>EnergyGestion360 · Solo para los mejores</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c8a44a;
+      --gold-dim: rgba(200,164,74,0.15);
+      --gold-glow: rgba(200,164,74,0.35);
+      --black: #060606;
+      --surface: #0e0e0e;
+      --surface-2: #141414;
+      --border: rgba(255,255,255,0.06);
+      --text: #e8e2d6;
+      --muted: #6b6559;
+      --red-accent: #c0392b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; }
+    .mono  { font-family: 'DM Mono', monospace; }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,6,6,0.85);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+    .nav-logo .bolt {
+      font-family: 'Material Symbols Outlined';
+      color: var(--gold);
+      font-size: 1.4rem;
+    }
+    .nav-logo span:last-child {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      border: none;
+      cursor: crosshair;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      background: #d4b05a;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 8rem 3rem 5rem;
+    }
+
+    .hero::before { display: none; }
+
+    .hero-left {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .hero-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.8rem, 7vw, 7.5rem);
+      line-height: 0.93;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      max-width: 580px;
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+    .hero-sub strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 1rem 2.5rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.3s, transform 0.15s;
+      cursor: crosshair;
+    }
+    .btn-primary:hover {
+      background: #d4b05a;
+      box-shadow: 0 0 40px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-ghost span { font-family: 'Material Symbols Outlined'; font-size: 1rem; }
+
+    /* ── FILTER SECTION ── */
+    .filter-section {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .filter-card {
+      padding: 3rem;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .filter-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 2px;
+    }
+    .filter-card.yes::before { background: var(--gold); }
+    .filter-card.no::before  { background: var(--border); }
+
+    .filter-card-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 2rem;
+    }
+    .filter-card.yes .filter-card-label { color: var(--gold); }
+    .filter-card.no  .filter-card-label { color: var(--muted); }
+
+    .filter-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .filter-list li {
+      font-size: 0.9rem;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      line-height: 1.5;
+    }
+    .filter-list li .ico {
+      font-family: 'Material Symbols Outlined';
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .filter-card.yes .ico { color: var(--gold); }
+    .filter-card.no  .ico { color: var(--muted); }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* ── PERFILES ── */
+    .perfiles {
+      padding: 5rem 3rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .perfiles-inner { max-width: 1100px; margin: 0 auto; }
+
+    .perfiles-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3.5rem;
+      gap: 2rem;
+    }
+    .perfiles-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .perfiles-header h2 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .perfiles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .perfil-card {
+      background: var(--surface-2);
+      padding: 2.5rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .perfil-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .perfil-card:hover::after { width: 100%; }
+    .perfil-card:hover { background: #111; }
+
+    .perfil-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
+    .perfil-icon {
+      font-family: 'Material Symbols Outlined';
+      font-size: 1.8rem;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .perfil-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+    }
+    .perfil-desc {
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* ── SISTEMA / BACKOFFICE ── */
+    .sistema {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .sistema-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+      margin-bottom: 4rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sistema h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 0;
+    }
+    .sistema h2 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .sistema-right p {
+      font-size: 0.88rem;
+      line-height: 1.85;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .sistema-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .sistema-feature {
+      background: var(--surface);
+      padding: 2rem 2rem;
+    }
+    .sistema-feature .ico {
+      font-family: 'Material Symbols Outlined';
+      font-size: 1.3rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .sistema-feature-text strong {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .sistema-feature-text span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CALCULADORA ── */
+    .calc-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 3rem;
+    }
+    .calc-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .calc-header {
+      margin-bottom: 4rem;
+    }
+    .calc-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .calc-header h2 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .calc-header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+      max-width: 420px;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .calc-controls {
+      background: var(--surface-2);
+      padding: 3rem;
+    }
+    .calc-result-panel {
+      background: #0a0a0a;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+    .calc-result-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+
+    .slider-group { margin-bottom: 2.5rem; }
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.8rem;
+    }
+    .slider-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .slider-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 2px;
+      background: rgba(255,255,255,0.08);
+      outline: none;
+      cursor: crosshair;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 0;
+      background: var(--gold);
+      cursor: crosshair;
+      transform: rotate(45deg);
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      background: linear-gradient(90deg, var(--gold) var(--pct, 30%), rgba(255,255,255,0.08) 0);
+    }
+
+    .result-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+    .result-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      letter-spacing: 0.02em;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .result-amount .currency {
+      font-size: 0.45em;
+      opacity: 0.5;
+      vertical-align: super;
+    }
+    .result-period {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+    .result-disclaimer {
+      margin-top: 2rem;
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .result-cta {
+      display: inline-block;
+      margin-top: 2rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.75rem 1.8rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      transition: background 0.2s;
+      cursor: crosshair;
+    }
+    .result-cta:hover { background: #d4b05a; }
+
+    /* ── FORM ── */
+    .form-section {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .form-copy h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .form-copy h2 em { font-style: normal; color: var(--gold); }
+    .form-copy p {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .form-requirement {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+    .form-requirement .ico {
+      font-family: 'Material Symbols Outlined';
+      font-size: 0.9rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .form-requirement span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .form-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      position: relative;
+    }
+    .form-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent 60%);
+    }
+
+    .field-group { margin-bottom: 1.4rem; }
+    .field-label {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .field-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 0.9rem;
+      background: var(--black);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: crosshair;
+    }
+    .field-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(200,164,74,0.15);
+    }
+    .field-input::placeholder { color: rgba(255,255,255,0.15); }
+
+    select.field-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c8a44a' opacity='.6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.9rem center;
+    }
+    select.field-input option { background: #111; }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .check-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      cursor: crosshair;
+      margin-bottom: 0.7rem;
+    }
+    .check-label input[type=checkbox] {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+      accent-color: var(--gold);
+      cursor: crosshair;
+    }
+    .check-label span {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .check-label a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .check-label a:hover { text-decoration: underline; }
+
+    .submit-btn {
+      width: 100%;
+      height: 46px;
+      background: var(--gold);
+      color: var(--black);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: none;
+      cursor: crosshair;
+      transition: background 0.2s, box-shadow 0.3s;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover {
+      background: #d4b05a;
+      box-shadow: 0 0 30px var(--gold-glow);
+    }
+    .form-legal {
+      margin-top: 0.8rem;
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.08em;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .form-legal a { color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.3;
+    }
+    .footer-logo .bolt {
+      font-family: 'Material Symbols Outlined';
+      font-size: 1.1rem;
+      color: var(--gold);
+    }
+    .footer-logo span:last-child {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.7s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.48s; }
+    .delay-5 { animation-delay: 0.62s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .perfiles-grid { grid-template-columns: 1fr 1fr; }
+      .sistema, .form-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .sistema-top { grid-template-columns: 1fr; gap: 2rem; }
+      .sistema-features { grid-template-columns: 1fr; }
+      .calc-grid { grid-template-columns: 1fr; }
+      .perfiles-header { flex-direction: column; align-items: flex-start; }
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .filter-section, .calc-section, .form-section { padding: 4rem 1.5rem; }
+      .perfiles { padding: 4rem 1.5rem; }
+      .sistema { padding: 4rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .perfiles-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">
+      <span class="bolt">bolt</span>
+      <span>EnergyGestion360</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#quienes">Perfil</a></li>
+      <li><a href="#sistema">Sistema</a></li>
+      <li><a href="#calculadora">Calculadora</a></li>
+    </ul>
+    <a class="nav-cta" href="#form-colaboracion">Solicitar acceso</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow fade-up">Comercialización energética · Acceso restringido</div>
+      <h1 class="hero-h1 fade-up delay-1">
+        TU CARTERA ES UNA<br/>
+        <em>MINA DE ORO:</em><br/>
+        DEJA DE USAR UNA PALA.
+      </h1>
+      <p class="hero-sub fade-up delay-2">
+        Te damos la artillería pesada del sector energético. Liquidaciones automáticas y acceso total al mercado. <strong>Si tienes la ambición, nosotros tenemos el poder.</strong>
+      </p>
+      <div class="hero-actions fade-up delay-3">
+        <a href="#form-colaboracion" class="btn-primary">QUIERO MI PARTE. ENTRAR AHORA.</a>
+        <a href="#calculadora" class="btn-ghost">
+          <span>arrow_downward</span>
+          Ver mi potencial
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTRO: ERES TÚ O NO ERES TÚ -->
+  <section class="filter-section" id="quienes">
+    <div class="section-label">Criterio de selección</div>
+    <div class="filter-grid">
+      <div class="filter-card yes">
+        <div class="filter-card-label">Esto es para ti si…</div>
+        <ul class="filter-list">
+          <li><span class="ico">check_circle</span>Tienes una cartera de clientes que ya confía en ti.</li>
+          <li><span class="ico">check_circle</span>Vienes del sector inmobiliario, seguros, suministros o servicios.</li>
+          <li><span class="ico">check_circle</span>Controlas el ciclo de venta y odias depender de otros para cerrar.</li>
+          <li><span class="ico">check_circle</span>Quieres ingresos recurrentes sin añadir una hora a tu semana.</li>
+          <li><span class="ico">check_circle</span>Buscas estructura propia, no trabajar para el beneficio de otro.</li>
+        </ul>
+      </div>
+      <div class="filter-card no">
+        <div class="filter-card-label">Cierra esta página si…</div>
+        <ul class="filter-list">
+          <li><span class="ico">cancel</span>Necesitas que te enseñen a vender desde cero.</li>
+          <li><span class="ico">cancel</span>Buscas un sueldo fijo o una empresa que te proteja.</li>
+          <li><span class="ico">cancel</span>No tienes red de contactos ni base de clientes propia.</li>
+          <li><span class="ico">cancel</span>Esperas resultados sin hacer el trabajo de campo.</li>
+          <li><span class="ico">cancel</span>La palabra "comisión" te genera inseguridad.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFILES -->
+  <section class="perfiles">
+    <div class="perfiles-inner">
+      <div class="perfiles-header">
+        <div>
+          <div class="section-label">¿A quién abrimos la red?</div>
+          <h2>Tres perfiles.<br/><em>Un denominador común.</em></h2>
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);max-width:280px;line-height:1.7;">
+          Cartera real. Ambición real. Si encajas en uno de estos tres, tenemos que hablar.
+        </p>
+      </div>
+      <div class="perfiles-grid">
+        <div class="perfil-card">
+          <div class="perfil-num">01 / 03</div>
+          <span class="perfil-icon">trending_up</span>
+          <div class="perfil-title">Talento en activo</div>
+          <p class="perfil-desc">Estás en el sector, gestionas clientes pero tu empresa se lleva el margen que debería ser tuyo. Cámbiate a la red que liquida más rápido y transparente.</p>
+        </div>
+        <div class="perfil-card">
+          <div class="perfil-num">02 / 03</div>
+          <span class="perfil-icon">database</span>
+          <div class="perfil-title">Activos durmientes</div>
+          <p class="perfil-desc">Base de datos, agenda, histórico de relaciones. Todo eso es oro acumulando polvo. Nosotros ejecutamos la operativa, tú facturas sobre lo que ya tienes.</p>
+        </div>
+        <div class="perfil-card">
+          <div class="perfil-num">03 / 03</div>
+          <span class="perfil-icon">domain</span>
+          <div class="perfil-title">Élite inmobiliaria</div>
+          <p class="perfil-desc">Cada inmueble que gestionas tiene una factura de luz. Monetiza cada suministro sin modificar tu operativa un milímetro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SISTEMA -->
+  <section id="sistema" style="border-top: 1px solid var(--border);">
+    <div class="sistema">
+      <div class="sistema-top">
+        <div>
+          <div class="section-label">Backoffice · Sin excusas</div>
+          <h2>Trituramos<br/><em>el papeleo.</em><br/>Tú cierras.</h2>
+        </div>
+        <div class="sistema-right">
+          <p>Ecosistema operativo con datos crudos y reglas claras. Alta, trazabilidad, liquidación. Sin humo, sin esperas, sin intermediarios que ralenticen tu facturación.</p>
+          <a href="sistema.html" class="btn-ghost">
+            <span>arrow_forward</span>
+            Ver sistema de liquidación
+          </a>
+        </div>
+      </div>
+      <div class="sistema-features">
+        <div class="sistema-feature">
+          <span class="ico">payments</span>
+          <div class="sistema-feature-text">
+            <strong>Liquidación sin demoras</strong>
+            <span>Calendario claro y transferencias sin fricciones ni excusas.</span>
+          </div>
+        </div>
+        <div class="sistema-feature">
+          <span class="ico">workspace_premium</span>
+          <div class="sistema-feature-text">
+            <strong>Estructura bajo tu marca</strong>
+            <span>Trabaja con varias comercializadoras bajo tu paraguas propio.</span>
+          </div>
+        </div>
+        <div class="sistema-feature">
+          <span class="ico">visibility</span>
+          <div class="sistema-feature-text">
+            <strong>Trazabilidad total</strong>
+            <span>Cada alta, cada comisión, cada movimiento. En tiempo real.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    </div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section class="calc-section" id="calculadora">
+    <div class="calc-inner">
+      <div class="calc-header">
+        <div class="section-label">Calculadora de potencial</div>
+        <h2 class="calc-header h2" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:1;">
+          ¿Cuánto estás<br/><em style="font-style:normal;color:var(--gold);">dejando sobre la mesa?</em>
+        </h2>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:0.8rem;">Ajusta tu volumen mensual y calcula tu ingreso real.</p>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-controls">
+          <div class="slider-group">
+            <div class="slider-row">
+              <span class="slider-label">Contratos mensuales</span>
+              <span class="slider-val mono" id="contratosValue">150</span>
+            </div>
+            <input type="range" id="contratos" min="0" max="500" value="150"/>
+          </div>
+          <div class="slider-group">
+            <div class="slider-row">
+              <span class="slider-label">Consumo medio (kWh/año)</span>
+              <span class="slider-val mono" id="consumoValue">3.500</span>
+            </div>
+            <input type="range" id="consumo" min="1000" max="50000" value="3500"/>
+          </div>
+        </div>
+        <div class="calc-result-panel">
+          <div class="result-eyebrow">Potencial de comisión anual</div>
+          <div class="result-amount">
+            <span class="currency">€</span><span id="comisionTotal">42.750</span>
+          </div>
+          <div class="result-period">Al año · estimación orientativa</div>
+          <p class="result-disclaimer">*Cálculo basado en margen promedio. El resultado real varía según perfil de cliente y comercializadora.</p>
+          <a href="comisiones.html" class="result-cta">Ver desglose de comisiones →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="form-section" id="form-colaboracion">
+    <div class="form-layout">
+      <div class="form-copy">
+        <div class="section-label">Solicitud de acceso</div>
+        <h2>¿Vienes<br/>a <em>ganar?</em></h2>
+        <p>Pide acceso a la red. Filtramos por potencial de facturación y encaje real. Sin vueltas ni reuniones innecesarias.</p>
+        <p style="margin-bottom:2rem;">Lo que evaluamos:</p>
+        <div class="form-requirement">
+          <span class="ico">check</span>
+          <span>Volumen de cartera actual o potencial</span>
+        </div>
+        <div class="form-requirement">
+          <span class="ico">check</span>
+          <span>Experiencia en ventas o gestión de clientes</span>
+        </div>
+        <div class="form-requirement">
+          <span class="ico">check</span>
+          <span>Capacidad de cierre sin tutorías</span>
+        </div>
+        <div class="form-requirement">
+          <span class="ico">check</span>
+          <span>Ambición medible en euros, no en promesas</span>
+        </div>
+      </div>
+      <div class="form-box">
+        <form id="form-eg360" action="enviar.php" method="post">
+          <input type="text" name="empresa" style="display:none;" autocomplete="off" tabindex="-1" aria-hidden="true"/>
+          <input type="hidden" name="origen" value="index"/>
+          <div class="form-grid-2">
+            <div class="field-group">
+              <label class="field-label" for="nombre">Nombre completo</label>
+              <input class="field-input" id="nombre" type="text" name="nombre" required placeholder="Nombre y apellidos"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="telefono">Teléfono</label>
+              <input class="field-input" id="telefono" type="tel" name="telefono" required inputmode="tel" pattern="^[+\d][\d\s-]{7,}$" placeholder="+34 600 000 000"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="perfil">Tu perfil</label>
+              <select class="field-input" id="perfil" name="perfil" required>
+                <option value="" selected disabled>Selecciona…</option>
+                <option>Agente energético</option>
+                <option>Inmobiliaria</option>
+                <option>Administrador de fincas</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="facturacion">Facturación estimada (€)</label>
+              <input class="field-input" id="facturacion" type="text" name="facturacion" placeholder="p.ej. 50.000"/>
+            </div>
+          </div>
+          <div style="margin-top:0.5rem;margin-bottom:0.5rem;">
+            <label class="check-label">
+              <input id="acepta" name="acepta" value="1" type="checkbox" required/>
+              <span>He leído y acepto la <a href="privacidad.html">Política de Privacidad</a> y el <a href="privacidad.html#aviso-legal">Aviso Legal</a> de EnergyGestion360.</span>
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="marketing" value="1"/>
+              <span>Acepto recibir comunicaciones comerciales. (Opcional)</span>
+            </label>
+          </div>
+          <button type="submit" class="submit-btn">Solicitar acceso a la red</button>
+          <p class="form-legal">Al enviar, tus datos se tratarán para evaluar tu acceso a la red EG360. Derechos RGPD en <a href="/cdn-cgi/l/email-protection#85f5f7ecf3e4e6ece1e4e1c5e0ebe0f7e2fce2e0f6f1eceaebb6b3b5abe6eae8"><span class="__cf_email__" data-cfemail="aededcc7d8cfcdc7cacfcaeecbc0cbdcc9d7c9cbdddac7c1c09d989e80cdc1c3">[email&#160;protected]</span></a></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <span class="bolt">bolt</span>
+      <span>EnergyGestion360</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacidad.html#aviso-legal">Legal</a>
+      <a href="privacidad.html">Privacidad</a>
+    </div>
+    <div class="footer-copy">© 2026 EnergyGestion360 Network. All rights reserved.</div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  (function(){
+    var contratos = document.getElementById('contratos');
+    var consumo   = document.getElementById('consumo');
+    var cVal      = document.getElementById('contratosValue');
+    var kVal      = document.getElementById('consumoValue');
+    var total     = document.getElementById('comisionTotal');
+    var margen    = 0.006;
+
+    function pct(el) {
+      var min = +el.min, max = +el.max, val = +el.value;
+      return ((val - min) / (max - min) * 100).toFixed(1) + '%';
+    }
+
+    function update() {
+      var cMes = +(contratos.value || 0);
+      var kwh  = +(consumo.value   || 0);
+      if (cVal)   cVal.textContent   = cMes.toLocaleString('es-ES');
+      if (kVal)   kVal.textContent   = kwh.toLocaleString('es-ES');
+      if (total)  total.textContent  = Math.floor(cMes * kwh * margen * 12).toLocaleString('es-ES');
+      contratos.style.setProperty('--pct', pct(contratos));
+      consumo.style.setProperty('--pct', pct(consumo));
+      // sync hero stat
+      var stat = document.getElementById('stat-anual');
+      if (sta

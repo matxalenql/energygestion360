@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>EnergyGestion360 · Sistema de Liquidación</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #c8a44a;
+      --gold-dim: rgba(200,164,74,0.15);
+      --gold-glow: rgba(200,164,74,0.35);
+      --black: #060606;
+      --surface: #0e0e0e;
+      --surface-2: #141414;
+      --border: rgba(255,255,255,0.06);
+      --text: #e8e2d6;
+      --muted: #6b6559;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,6,6,0.85);
+      backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+    .nav-logo .bolt {
+      font-family: 'Material Symbols Outlined';
+      color: var(--gold);
+      font-size: 1.4rem;
+    }
+    .nav-logo span:last-child {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-back {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .nav-back span { font-family: 'Material Symbols Outlined'; font-size: 0.9rem; }
+    .nav-back:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      cursor: crosshair;
+    }
+    .nav-cta:hover {
+      background: #d4b05a;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-inner {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+      width: 100%;
+    }
+    .section-label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.4rem;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--muted);
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.8rem, 7vw, 7.5rem);
+      line-height: 0.93;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 1.8rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero-sub {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.3s;
+      cursor: crosshair;
+    }
+    .btn-primary:hover {
+      background: #d4b05a;
+      box-shadow: 0 0 30px var(--gold-glow);
+    }
+    .btn-outline {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: crosshair;
+    }
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--text);
+    }
+
+    /* ── PASOS ── */
+    .pasos {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .pasos-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+      gap: 2rem;
+    }
+    .pasos-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .pasos-header h2 em { font-style: normal; color: var(--gold); }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #27ae60;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .pasos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .paso-card {
+      background: var(--surface);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .paso-card:hover { background: #111; }
+    .paso-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .paso-card:hover::before { opacity: 1; }
+
+    .paso-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .paso-icon {
+      font-family: 'Material Symbols Outlined';
+      font-size: 2rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+    .paso-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      line-height: 1;
+    }
+    .paso-desc {
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .paso-checks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .paso-checks li {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.5;
+    }
+    .paso-checks li::before {
+      content: '✓';
+      color: var(--gold);
+      font-size: 0.7rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* ── FLUJO VISUAL ── */
+    .flujo {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 3rem;
+    }
+    .flujo-inner { max-width: 1100px; margin: 0 auto; }
+    .flujo-header { margin-bottom: 4rem; }
+    .flujo-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+    .flujo-header h2 em { font-style: normal; color: var(--gold); }
+    .flujo-header p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 460px;
+      line-height: 1.7;
+    }
+
+    .flujo-timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .flujo-timeline::before {
+      content: '';
+      position: absolute;
+      left: 1.2rem;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, var(--gold), rgba(200,164,74,0.1));
+    }
+    .flujo-item {
+      display: flex;
+      gap: 2.5rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .flujo-item:last-child { border-bottom: none; }
+    .flujo-dot {
+      width: 2.4rem;
+      height: 2.4rem;
+      background: var(--black);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .flujo-dot span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--gold);
+    }
+    .flujo-content { flex: 1; }
+    .flujo-tag {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+    .flujo-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .flujo-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+    .flujo-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-left: auto;
+      flex-shrink: 0;
+      padding-top: 0.4rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── GARANTIAS ── */
+    .garantias {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .garantias-header { margin-bottom: 3rem; }
+    .garantias-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .garantias-header h2 em { font-style: normal; color: var(--gold); }
+
+    .garantias-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .garantia-item {
+      background: var(--surface);
+      padding: 2rem 2.5rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+    }
+    .garantia-ico {
+      font-family: 'Material Symbols Outlined';
+      font-size: 1.3rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .garantia-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .garantia-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── CTA FINAL ── */
+    .cta-final {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5rem 3rem;
+      text-align: center;
+    }
+    .cta-final h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.2rem;
+    }
+    .cta-final h2 em { font-style: normal; color: var(--gold); }
+    .cta-final p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.3;
+    }
+    .footer-logo .bolt { font-family: 'Material Symbols Outlined'; font-size: 1.1rem; color: var(--gold); }
+    .footer-logo span:last-child { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.1em; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a {
+      font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.15); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.7s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.35s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .pasos { padding: 4rem 1.5rem; }
+      .pasos-grid { grid-template-columns: 1fr; }
+      .flujo { padding: 4rem 1.5rem; }
+      .flujo-item { flex-wrap: wrap; }
+      .flujo-meta { margin-left: 0; }
+      .garantias { padding: 4rem 1.5rem; }
+      .garantias-grid { grid-template-columns: 1fr; }
+      .cta-final { padding: 4rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index-9.html">
+      <span class="bolt">bolt</span>
+      <span>EnergyGestion360</span>
+    </a>
+    <div class="nav-right">
+      <a class="nav-back" href="index-9.html">
+        <span>arrow_back</span>
+        Volver al inicio
+      </a>
+      <a class="nav-cta" href="index-9.html#form-colaboracion">Solicitar acceso</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="section-label fade-up">Sistema de liquidación</div>
+      <h1 class="fade-up delay-1">
+        LO VES.<br/>
+        <em>LO COBRAS.</em>
+      </h1>
+      <p class="hero-sub fade-up delay-2">
+        Un flujo claro, medible y sin fricciones. Tres pasos, cero sorpresas: alta, verificación y activación, cálculo y pago.
+      </p>
+      <div class="hero-actions fade-up delay-3">
+        <a href="#pasos" class="btn-primary">Ver cómo funciona ↓</a>
+        <a href="index-9.html" class="btn-outline">Volver al inicio</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASOS -->
+  <section class="pasos" id="pasos">
+    <div class="pasos-header">
+      <div>
+        <div class="section-label">El proceso</div>
+        <h2>Así <em>liquidamos.</em></h2>
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Tiempo real
+      </div>
+    </div>
+    <div class="pasos-grid">
+      <div class="paso-card">
+        <div class="paso-num">01 / 03</div>
+        <span class="paso-icon">contract_edit</span>
+        <div class="paso-title">Alta de contrato</div>
+        <p class="paso-desc">Recogemos datos mínimos, validamos formato y pre-asignamos pipeline comercial. Sin fricción, sin duplicidades.</p>
+        <ul class="paso-checks">
+          <li>Ingreso limpio: CSV, formulario o API</li>
+          <li>Controles de formato y completitud</li>
+          <li>Asignación automática de pipeline</li>
+        </ul>
+      </div>
+      <div class="paso-card">
+        <div class="paso-num">02 / 03</div>
+        <span class="paso-icon">verified</span>
+        <div class="paso-title">Verificación & Activación</div>
+        <p class="paso-desc">Trazabilidad completa. Lo que entra, o se activa o se devuelve con causa. El "ON" no es estético; es binario.</p>
+        <ul class="paso-checks">
+          <li>Controles de elegibilidad y duplicidad</li>
+          <li>Activación confirmada por feed seguro</li>
+          <li>Notificación en tiempo real</li>
+        </ul>
+      </div>
+      <div class="paso-card">
+        <div class="paso-num">03 / 03</div>
+        <span class="paso-icon">payments</span>
+        <div class="paso-title">Cálculo & Pago</div>
+        <p class="paso-desc">Regla clara, datos crudos y calendario. Liquidación que no necesita explicación.</p>
+        <ul class="paso-checks">
+          <li>Cálculo auditable por cada alta</li>
+          <li>Pago programado y trazado</li>
+          <li>Histórico descargable en cualquier momento</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLUJO TIMELINE -->
+  <section class="flujo" id="flujo">
+    <div class="flujo-inner">
+      <div class="flujo-header">
+        <div class="section-label">Flujo completo</div>
+        <h2>De la firma<br/>al <em>ingreso.</em></h2>
+        <p>Cada paso tiene un responsable, un estado y un timestamp. Sin cajas negras.</p>
+      </div>
+      <div class="flujo-timeline">
+        <div class="flujo-item">
+          <div class="flujo-dot"><span>01</span></div>
+          <div class="flujo-content">
+            <div class="flujo-tag">Captación</div>
+            <div class="flujo-title">Contrato firmado y enviado</div>
+            <p class="flujo-desc">El colaborador introduce el contrato vía formulario, CSV o integración API. El sistema valida campos obligatorios al instante.</p>
+          </div>
+          <div class="flujo-meta">T+0h</div>
+        </div>
+        <div class="flujo-item">
+          <div class="flujo-dot"><span>02</span></div>
+          <div class="flujo-content">
+            <div class="flujo-tag">Validación</div>
+            <div class="flujo-title">Revisión automática de elegibilidad</div>
+            <p class="flujo-desc">El sistema cruza datos con la comercializadora. Duplicidades, errores de formato y puntos de suministro inválidos se detectan y devuelven con causa en menos de 24 horas.</p>
+          </div>
+          <div class="flujo-meta">T+24h</div>
+        </div>
+        <div class="flujo-item">
+          <div class="flujo-dot"><span>03</span></div>
+          <div class="flujo-content">
+            <div class="flujo-tag">Activación</div>
+            <div class="flujo-title">Confirmación de alta activa</div>
+            <p class="flujo-desc">Una vez confirmada la activación por la distribuidora, el contrato pasa a estado ACTIVO en el backoffice. El colaborador recibe notificación.</p>
+          </div>
+          <div class="flujo-meta">T+72h</div>
+        </div>
+        <div class="flujo-item">
+          <div class="flujo-dot"><span>04</span></div>
+          <div class="flujo-content">
+            <div class="flujo-tag">Cálculo</div>
+            <div class="flujo-title">Generación del desglose de comisión</div>
+            <p class="flujo-desc">El sistema calcula la comisión aplicando las reglas vigentes al tipo de contrato, consumo estimado y tarifa. Auditable línea a línea.</p>
+          </div>
+          <div class="flujo-meta">Cierre de mes</div>
+        </div>
+        <div class="flujo-item">
+          <div class="flujo-dot"><span>05</span></div>
+          <div class="flujo-content">
+            <div class="flujo-tag">Pago</div>
+            <div class="flujo-title">Transferencia ejecutada</div>
+            <p class="flujo-desc">El pago se ejecuta según el calendario pactado. Sin retenciones arbitrarias, sin demoras. El colaborador puede consultar el estado en tiempo real desde su panel.</p>
+          </div>
+          <div class="flujo-meta">Día 10</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GARANTÍAS -->
+  <section class="garantias">
+    <div class="garantias-header">
+      <div class="section-label">Lo que garantizamos</div>
+      <h2>Sin letra pequeña.<br/><em>Sin sorpresas.</em></h2>
+    </div>
+    <div class="garantias-grid">
+      <div class="garantia-item">
+        <span class="garantia-ico">visibility</span>
+        <div>
+          <div class="garantia-title">Transparencia total</div>
+          <p class="garantia-desc">Cada alta, cada estado, cada comisión. Acceso completo a tus datos en tiempo real desde el backoffice.</p>
+        </div>
+      </div>
+      <div class="garantia-item">
+        <span class="garantia-ico">schedule</span>
+        <div>
+          <div class="garantia-title">Calendario fijo</div>
+          <p class="garantia-desc">Las liquidaciones siguen un calendario público y predecible. Sabes cuándo cobras antes de cerrar el contrato.</p>
+        </div>
+      </div>
+      <div class="garantia-item">
+        <span class="garantia-ico">gavel</span>
+        <div>
+          <div class="garantia-title">Reglas auditables</div>
+          <p class="garantia-desc">El cálculo de comisión es transparente y reproducible. Puedes verificar cada línea con los datos crudos del sistema.</p>
+        </div>
+      </div>
+      <div class="garantia-item">
+        <span class="garantia-ico">support_agent</span>
+        <div>
+          <div class="garantia-title">Resolución con causa</div>
+          <p class="garantia-desc">Cualquier rechazo o incidencia se devuelve con motivo específico. No hay respuestas genéricas ni cierres sin explicación.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <div class="section-label" style="justify-content:center;margin-bottom:1.2rem;">¿Listo?</div>
+    <h2>El sistema está<br/><em>esperándote.</em></h2>
+    <p>Si tienes la cartera, nosotros ponemos la estructura. Sin burocracia, sin retrasos.</p>
+    <a href="index-9.html#form-colaboracion" class="btn-primary">QUIERO MI PARTE. ENTRAR AHORA.</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <span class="bolt">bolt</span>
+      <span>EnergyGestion360</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacidad.html#aviso-legal">Legal</a>
+      <a href="privacidad.html">Privacidad</a>
+    </div>
+    <div class="footer-copy">© 2026 EnergyGestion360 Network. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>
